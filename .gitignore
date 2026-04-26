@@ -1,0 +1,11 @@
+# Ignore the virtual environment folder
+venv/
+__pycache__/
+
+# NEVER upload the local environment variables file
+.env
+.venv
+
+# Ignore DuckDB local database files
+*.db
+*.duckdb
