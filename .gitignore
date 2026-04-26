@@ -1,6 +1,7 @@
 # Ignore the virtual environment folder
 venv/
 __pycache__/
+.cache
 
 # NEVER upload the local environment variables file
 .env
