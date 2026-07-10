@@ -1,0 +1,25 @@
+To definitively identify duplicates and build a reliable dataset, you should use a combination of two fields as your composite unique identifier (or primary key):
+
+played_at
+
+track.id (or track.uri)
+
+Why you must use BOTH fields
+Why track.id alone is not enough: You can listen to "It's My Life" multiple times a day. If you use only the track ID to drop duplicates, you will delete every subsequent time you stream that song, ruining your listening history.
+
+Why played_at alone is not enough: Technically, played_at is accurate down to the millisecond (2026-07-10T07:32:08.217Z). It is almost impossible for a single user to trigger two separate plays at the exact same millisecond. However, pairing it with the track ID is the data engineering standard to safeguard against weird API glitches.
+
+
+
+
+Option 1 (0 12,18,0 * * *)
+In Plain English:
+"Run this script at 12:00 PM (Noon), 6:00 PM, and 12:00 AM (Midnight) every single day."
+
+This effectively creates three observation windows to pull your Spotify data:
+
+At 12:00 PM: Pulls songs played between Midnight and Noon.
+
+At 6:00 PM: Pulls songs played between Noon and 6:00 PM.
+
+At Midnight: Pulls songs played between 6:00 PM and Midnight.
