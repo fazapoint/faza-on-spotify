@@ -16,7 +16,7 @@ ROOT_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
 
 # Build everything cleanly going DOWN from ROOT_PATH
 LANDING_PATH = os.path.join(ROOT_PATH, "local", "Warehouse", "Landing")
-LANDING_RECENTLY_PLAYED = os.path.join(LANDING_PATH, "Landing_Recently_Played")
+LANDING_RECENTLY_PLAYED = os.path.join(LANDING_PATH, "Recently_Played")
 CACHE_PATH = os.path.join(ROOT_PATH, ".cache")
 
 # setup auth

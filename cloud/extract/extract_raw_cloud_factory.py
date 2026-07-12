@@ -50,6 +50,7 @@ def upload_recently_played_to_cloud(target_storage):
 
     except Exception as e:
         print(f"Error: {e}")
+        raise
 
 if __name__ == '__main__':
     upload_recently_played_to_cloud("path_to_storage_blob")
