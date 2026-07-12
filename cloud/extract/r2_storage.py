@@ -11,7 +11,7 @@ load_dotenv()
 # Note: R2 uses 'auto' for the region name, which is a required placeholder for boto3.
 s3_client = boto3.client(
     service_name="s3",
-    endpoint_url=f"https://{os.getenv("ACCOUNT_ID")}.r2.cloudflarestorage.com",
+    endpoint_url=f"https://{os.getenv('ACCOUNT_ID')}.r2.cloudflarestorage.com",
     aws_access_key_id=os.getenv("ACCESS_KEY_ID"),
     aws_secret_access_key=os.getenv("SECRET_ACCESS_KEY"),
     region_name="auto", 
