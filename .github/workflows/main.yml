@@ -43,4 +43,4 @@ jobs:
           BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
         run: |
           # Point Python directly to the subfolder path of your script
-          python cloud/extract/extract_recent_played.py
+          python cloud/extract/extract_recently_played.py
