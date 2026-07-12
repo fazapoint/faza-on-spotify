@@ -8,13 +8,13 @@ from datetime import datetime, timezone, timedelta
 # load credential from .env
 load_dotenv()
 
-# 1. Get the directory where this script lives (/root/local/extract)
+# Get the directory where this script lives (/root/local/extract)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# 2. Go up two levels to get to the absolute project root (/root)
+# Go up two levels to get to the absolute project root (/root)
 ROOT_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
 
-# 3. Build everything cleanly going DOWN from ROOT_PATH
+# Build everything cleanly going DOWN from ROOT_PATH
 LANDING_PATH = os.path.join(ROOT_PATH, "local", "Warehouse", "Landing")
 LANDING_RECENTLY_PLAYED = os.path.join(LANDING_PATH, "Landing_Recently_Played")
 CACHE_PATH = os.path.join(ROOT_PATH, ".cache")
@@ -31,7 +31,6 @@ auth_manager = SpotifyOAuth(
 )
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
-# output
 print("Fetching xxx data .....")
 
 # Create a filename with today's date/time

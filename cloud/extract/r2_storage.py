@@ -7,7 +7,7 @@ from botocore.config import Config
 # load credential from .env
 load_dotenv()
 
-# 2. Establish the connection
+# Establish the connection
 # Note: R2 uses 'auto' for the region name, which is a required placeholder for boto3.
 s3_client = boto3.client(
     service_name="s3",
@@ -18,17 +18,30 @@ s3_client = boto3.client(
     config=Config(signature_version="s3v4")
 )
 
-# --- 3. Example Operations ---
 
-# A. Upload a File
-def upload_file(local_path, r2_object_name):
+# Upload a file locally
+def upload_file_from_local(local_path, r2_object_name):
     try:
         s3_client.upload_file(local_path, os.getenv("BUCKET_NAME"), r2_object_name)
         print(f"Successfully uploaded {local_path} to R2 as '{r2_object_name}'")
     except Exception as e:
         print(f"Upload failed: {e}")
 
-# B. List Objects in the Bucket
+# Upload file directly json
+def upload_file_from_api(json_data, r2_object_name):
+    try:
+        s3_client.put_object(
+            Bucket=os.getenv("BUCKET_NAME"),
+            Key=r2_object_name,
+            Body=json_data,
+            ContentType="application/json"
+        )
+        print(f"Successfully uploaded data directly to R2 as '{r2_object_name}'")
+    except Exception as e:
+        print(f"Direct upload failed: {e}")
+
+
+# List objects in the bucket
 def list_files():
     try:
         response = s3_client.list_objects_v2(Bucket=os.getenv("BUCKET_NAME"))
@@ -38,7 +51,7 @@ def list_files():
     except Exception as e:
         print(f"Failed to list objects: {e}")
 
-# C. Download a File
+# Download a File
 def download_file(r2_object_name, local_destination_path):
     try:
         s3_client.download_file(os.getenv("BUCKET_NAME"), r2_object_name, local_destination_path)
@@ -46,12 +59,7 @@ def download_file(r2_object_name, local_destination_path):
     except Exception as e:
         print(f"Download failed: {e}")
 
-# --- Execute Examples ---
 if __name__ == "__main__":
-    # Create a dummy local file to test
-    with open("hello.txt", "w") as f:
-        f.write("Hello from Cloudflare R2 and Python!")
-        
-    upload_file("hello.txt", "folder/hello_r2.txt")
+    upload_file_from_local("hello.txt", f"{TARGET_BLOB_OBJECT}/hello_r2.txt")
     list_files()
-    download_file("folder/hello_r2.txt", "downloaded_hello.txt")
+    download_file(f"folder/hello_r2.txt", "downloaded_hello.txt")
