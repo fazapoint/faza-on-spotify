@@ -2,7 +2,7 @@ name: Fetch Spotify Recently Played
 
 on:
   schedule:
-    - cron: '0 5,11,17 * * *'
+    - cron: '12 5,11,17 * * *'
   workflow_dispatch: 
 
 jobs:
