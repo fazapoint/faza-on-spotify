@@ -28,6 +28,13 @@ auth_manager = SpotifyOAuth(
 )
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
+def get_latest_recently_played_file(target_storage):
+    # generate filename
+    WIB = timezone(timedelta(hours=7))
+    timestamp = datetime.now(WIB).strftime("%Y%m%d")
+    filename = os.path.join(target_storage, f"spotify_raw_{timestamp}.json")
+    print(filename)
+
 
 def upload_recently_played_to_cloud(target_storage):
     print("Fetching xxx data............")
@@ -47,10 +54,10 @@ def upload_recently_played_to_cloud(target_storage):
 
         print("Extract completed............")
 
-
     except Exception as e:
         print(f"Error: {e}")
         raise
 
 if __name__ == '__main__':
-    upload_recently_played_to_cloud("path_to_storage_blob")
+    # upload_recently_played_to_cloud("path_to_storage_blob")
+    get_latest_recently_played_file("test")

@@ -1,0 +1,43 @@
+{
+    "ResponseMetadata": {
+        "HTTPStatusCode": 200,
+        "HTTPHeaders": {
+            "date": "Thu, 16 Jul 2026 17:06:07 GMT",
+            "content-type": "application/xml",
+            "content-length": "1103",
+            "connection": "keep-alive",
+            "server": "cloudflare",
+            "cf-ray": "a1c29879ba6a1edc-SIN"
+        },
+        "RetryAttempts": 0
+    },
+    "IsTruncated": false,
+    "Contents": [
+        {
+            "Key": "Landing/recently-played/spotify_raw_20260716_011726.json",
+            "LastModified": "2026-07-15 18:17:27.933000+00:00",
+            "ETag": "\"7765f51585d0ca241841e52bbf937e20\"",
+            "Size": 190847,
+            "StorageClass": "STANDARD"
+        },
+        {
+            "Key": "Landing/recently-played/spotify_raw_20260716_143015.json",
+            "LastModified": "2026-07-16 07:30:16.771000+00:00",
+            "ETag": "\"d90dbe303f420c4163aff2221ec10c70\"",
+            "Size": 191166,
+            "StorageClass": "STANDARD"
+        },
+        {
+            "Key": "Landing/recently-played/spotify_raw_20260716_194620.json",
+            "LastModified": "2026-07-16 12:46:21.802000+00:00",
+            "ETag": "\"7316d90e6976cef26bc8fa06bbe6bccb\"",
+            "Size": 191166,
+            "StorageClass": "STANDARD"
+        }
+    ],
+    "Name": "fazaspotify-storage",
+    "Prefix": "Landing/recently-played/spotify_raw_20260716",
+    "MaxKeys": 1000,
+    "EncodingType": "url",
+    "KeyCount": 3
+}
