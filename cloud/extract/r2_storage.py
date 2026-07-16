@@ -62,7 +62,7 @@ def download_file(r2_object_name, local_destination_path):
 
 # Search file based on prefix
 def search_file_prefix(r2_object_name, prefixes):
-    response = s3_client.list_objects_v2(Bucket=os.getenv("BUCKET_NAME"), Prefix=f"{r2_object_name}/{prefix}")
+    response = s3_client.list_objects_v2(Bucket=os.getenv("BUCKET_NAME"), Prefix=f"{r2_object_name}/{prefixes}")
     clean_json = json.dumps(response, default=str, indent=4)
     print(clean_json)
 
