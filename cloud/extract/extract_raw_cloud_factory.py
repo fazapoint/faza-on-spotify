@@ -5,6 +5,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from datetime import datetime, timezone, timedelta
 from r2_storage import upload_file_from_api
+from pathlib import Path
 
 
 # load credential from .env
@@ -42,8 +43,10 @@ def upload_recently_played_to_cloud(target_storage):
     # generate filename
     WIB = timezone(timedelta(hours=7))
     timestamp = datetime.now(WIB).strftime("%Y%m%d_%H%M%S")
-    filename = os.path.join(target_storage, f"spotify_raw_{timestamp}.json")
-
+    todayDate = datetime.now(WIB).strftime("%Y%m%d")
+    base_dir = Path(target_storage)
+    filename = (base_dir / todayDate / f"spotify_raw_{timestamp}.json").as_posix()
+    # print(filename)
     try:
         # fetch the data
         results = sp.current_user_recently_played()
@@ -59,5 +62,5 @@ def upload_recently_played_to_cloud(target_storage):
         raise
 
 if __name__ == '__main__':
-    # upload_recently_played_to_cloud("path_to_storage_blob")
-    get_latest_recently_played_file("test")
+    upload_recently_played_to_cloud("Landing/recently-played")
+    # get_latest_recently_played_file("test")
