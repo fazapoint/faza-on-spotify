@@ -62,12 +62,17 @@ def download_file(r2_object_name, local_destination_path):
 
 # Search file based on prefix
 def search_file_prefix(r2_object_name, prefixes):
-    response = s3_client.list_objects_v2(Bucket=os.getenv("BUCKET_NAME"), Prefix=f"{r2_object_name}/{prefixes}")
-    clean_json = json.dumps(response, default=str, indent=4)
-    print(clean_json)
+    # hold files name
+    results = []
+
+    # loop the prefixes and extend it to iterable result
+    for prefix in prefixes:
+        response = s3_client.list_objects_v2(Bucket=os.getenv("BUCKET_NAME"), Prefix=f"{r2_object_name}/{prefix}")
+        print(response)
+        print(type(response))
 
 if __name__ == "__main__":
     # upload_file_from_local("hello.txt", f"{TARGET_BLOB_OBJECT}/hello_r2.txt")
     # list_files()
     # download_file(f"folder/hello_r2.txt", "downloaded_hello.txt")
-    search_file_prefix('Landing/recently-played', 'spotify_raw_20260716')
+    search_file_prefix('Landing/recently-played', ['spotify_raw_20260716'])
