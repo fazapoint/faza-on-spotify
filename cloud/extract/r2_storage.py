@@ -71,8 +71,12 @@ def search_file_prefix(r2_object_name, prefixes):
     # loop the prefixes and extend it to iterable result
     for prefix in prefixes:
         response = s3_client.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"{r2_object_name}/{prefix}")
-        print(response)
-        print(type(response))
+        if 'Contents' not in response:
+            continue
+
+        results.extend(response["Contents"])
+
+    return results
 
 def organize_r2_files_by_date_on_demand(r2_object_name):
     prefix_path = f"{r2_object_name.strip('/')}/" if r2_object_name else ""
@@ -174,4 +178,4 @@ if __name__ == "__main__":
     # upload_file_from_local("hello.txt", f"{TARGET_BLOB_OBJECT}/hello_r2.txt")
     # list_files()
     # download_file(f"folder/hello_r2.txt", "downloaded_hello.txt")
-    search_file_prefix('Landing/recently-played', ['spotify_raw_20260716'])
+    print(search_file_prefix('Landing/recently-played', ['20260714','20260722']))

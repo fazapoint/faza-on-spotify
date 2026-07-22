@@ -17,6 +17,21 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
 CACHE_PATH = os.path.join(ROOT_PATH, ".cache")
 
+def get_date_only():
+    WIB = timezone(timedelta(hours=7))
+    today_date = datetime.now(WIB).strftime("%Y%m%d")
+    return today_date
+
+def get_datetime():
+    WIB = timezone(timedelta(hours=7))
+    timestamp = datetime.now(WIB).strftime("%Y%m%d_%H%M%S")
+    return timestamp
+
+def generate_filename(target_storage):
+    base_dir = Path(target_storage)
+    filename = (base_dir / get_date_only() / f"spotify_raw_{get_datetime()}.json").as_posix()
+    return filename
+
 # setup auth
 scope = "user-read-recently-played" # scope from auth spotify api
 auth_manager = SpotifyOAuth(
@@ -30,22 +45,14 @@ auth_manager = SpotifyOAuth(
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
 def get_latest_recently_played_file(target_storage):
-    # generate filename
-    WIB = timezone(timedelta(hours=7))
-    timestamp = datetime.now(WIB).strftime("%Y%m%d")
-    filename = os.path.join(target_storage, f"spotify_raw_{timestamp}.json")
-    print(filename)
+    result = generate_filename(target_storage)
+    print(result)
 
 
 def upload_recently_played_to_cloud(target_storage):
     print("Fetching xxx data............")
 
-    # generate filename
-    WIB = timezone(timedelta(hours=7))
-    timestamp = datetime.now(WIB).strftime("%Y%m%d_%H%M%S")
-    todayDate = datetime.now(WIB).strftime("%Y%m%d")
-    base_dir = Path(target_storage)
-    filename = (base_dir / todayDate / f"spotify_raw_{timestamp}.json").as_posix()
+    filename = generate_filename(target_storage)
     # print(filename)
     try:
         # fetch the data
@@ -62,5 +69,5 @@ def upload_recently_played_to_cloud(target_storage):
         raise
 
 if __name__ == '__main__':
-    upload_recently_played_to_cloud("Landing/recently-played")
+    # upload_recently_played_to_cloud("Landing/recently-played")
     # get_latest_recently_played_file("test")
