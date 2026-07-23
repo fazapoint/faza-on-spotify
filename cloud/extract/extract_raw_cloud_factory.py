@@ -70,4 +70,4 @@ def upload_recently_played_to_cloud(target_storage):
 
 if __name__ == '__main__':
     # upload_recently_played_to_cloud("Landing/recently-played")
-    # get_latest_recently_played_file("test")
+    get_latest_recently_played_file("test")

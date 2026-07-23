@@ -178,4 +178,4 @@ if __name__ == "__main__":
     # upload_file_from_local("hello.txt", f"{TARGET_BLOB_OBJECT}/hello_r2.txt")
     # list_files()
     # download_file(f"folder/hello_r2.txt", "downloaded_hello.txt")
-    print(search_file_prefix('Landing/recently-played', ['20260714','20260722']))
+    print(search_file_prefix('Landing/recently-played', ['20260721','20260716','20260715']))
