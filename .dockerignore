@@ -1,0 +1,14 @@
+.venv/
+venv/
+.env
+.cache
+.git/
+.github/
+__pycache__/
+*.py[cod]
+data/
+local/
+tests/
+*.db
+*.duckdb
+.gitignore

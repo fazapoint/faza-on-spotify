@@ -23,3 +23,68 @@ At 12:00 PM: Pulls songs played between Midnight and Noon.
 At 6:00 PM: Pulls songs played between Noon and 6:00 PM.
 
 At Midnight: Pulls songs played between 6:00 PM and Midnight.
+
+
+# trigger lambda function execution
+curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'
+
+curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" \
+  -d '{"action": "extract_recent", "limit": 20}'
+
+
+
+
+docker build -t faza-lambda-test .
+
+docker run --rm \
+  -p 9000:8080 \
+  --env-file .env \
+  -v $(pwd)/.cache:/tmp/.cache \
+  faza-lambda-test
+
+
+# ============================================================
+# MANUAL BUILD / DEPLOY (run these yourself)
+# ============================================================
+# Schedule is EventBridge UTC. WIB (UTC+7) 12:00 / 18:00 / 00:00
+# => UTC 05:00 / 11:00 / 17:00  => cron(0 5,11,17 * * ? *)
+
+
+# --- Local build & test ---
+docker build --platform linux/amd64 -t spotify-lambda .
+docker run --name spotify-lambda-test -p 9000:8080 --env-file .env spotify-lambda
+curl -XPOST localhost:9000/2015-03-31/functions/function/invocations -d '{"action":"ping"}'
+
+
+# --- Deploy to AWS (SAM) ---
+# First time (guided): prompts for region + the NoEcho env keys from template.yaml
+sam build
+sam deploy --guided
+
+# Subsequent deploys (non-interactive). Pass env keys as parameter overrides:
+sam build
+sam deploy --no-confirm-changeset \
+  --parameter-overrides \
+    SpotipyClientId="$SPOTIPY_CLIENT_ID" \
+    SpotipyClientSecret="$SPOTIPY_CLIENT_SECRET" \
+    SpotipyRedirectUri="$SPOTIPY_REDIRECT_URI" \
+    R2AccountId="$ACCOUNT_ID" \
+    R2AccessKeyId="$ACCESS_KEY_ID" \
+    R2SecretAccessKey="$SECRET_ACCESS_KEY" \
+    R2BucketName="$BUCKET_NAME" \
+    R2S3ApiEndpoint="$S3APIENDPOINT" \
+    R2TokenValue="$TOKEN_VALUE"
+
+# Manually invoke the deployed function once to verify:
+aws lambda invoke --function-name spotify-lambda-extract /tmp/out.json && cat /tmp/out.json
+
+
+# --- Manual image path (alternative to SAM) ---
+aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account>.dkr.ecr.<region>.amazonaws.com
+docker tag spotify-lambda:latest <account>.dkr.ecr.<region>.amazonaws.com/spotify-lambda:latest
+docker push <account>.dkr.ecr.<region>.amazonaws.com/spotify-lambda:latest
+aws lambda update-function-code --function-name spotify-lambda-extract --image-uri <account>.dkr.ecr.<region>.amazonaws.com/spotify-lambda:latest
+
+
+# --- Cleanup ---
+sam delete --stack-name spotify-lambda

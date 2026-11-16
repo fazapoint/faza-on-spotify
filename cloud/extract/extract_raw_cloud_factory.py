@@ -45,8 +45,11 @@ auth_manager = SpotifyOAuth(
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
 def get_latest_recently_played_file(target_storage):
-    result = generate_filename(target_storage)
-    print(result)
+    filename = generate_filename(target_storage)
+    results = sp.current_user_recently_played()
+    print(filename)
+    print(results)
+    
 
 
 def upload_recently_played_to_cloud(target_storage):

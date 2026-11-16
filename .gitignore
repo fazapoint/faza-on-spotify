@@ -2,6 +2,7 @@
 venv/
 __pycache__/
 .cache
+.cache.bak
 
 # NEVER upload the local environment variables file
 .env
@@ -10,3 +11,5 @@ __pycache__/
 # Ignore DuckDB local database files
 *.db
 *.duckdb
+
+aws-key.csv

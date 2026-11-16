@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Spotify data pipeline - containerized Lambda with scheduled runs
+
+Parameters:
+  ScheduleExpression:
+    Type: String
+    Default: "cron(0 5,11,17 * * ? *)"
+    Description: "EventBridge schedule (UTC). Default = 12:00, 18:00, 00:00 WIB."
+
+  LogLevel:
+    Type: String
+    Default: INFO
+
+  SpotipyClientId:
+    Type: String
+    NoEcho: true
+
+  SpotipyClientSecret:
+    Type: String
+    NoEcho: true
+
+  SpotipyRedirectUri:
+    Type: String
+    NoEcho: true
+
+  R2AccountId:
+    Type: String
+    NoEcho: true
+
+  R2AccessKeyId:
+    Type: String
+    NoEcho: true
+
+  R2SecretAccessKey:
+    Type: String
+    NoEcho: true
+
+  R2BucketName:
+    Type: String
+    NoEcho: true
+
+  R2S3ApiEndpoint:
+    Type: String
+    NoEcho: true
+
+  R2TokenValue:
+    Type: String
+    NoEcho: true
+    Default: ""
+
+Resources:
+  SpotifyExtractFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: SpotifyExtractLogGroup
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: .
+      DockerTag: latest
+    Properties:
+      PackageType: Image
+      FunctionName: !Sub "${AWS::StackName}-extract"
+      ImageConfig:
+        Command:
+          - src.extract.app.handler
+      Architectures:
+        - x86_64
+      Timeout: 120
+      MemorySize: 1024
+      Environment:
+        Variables:
+          LOG_LEVEL: !Ref LogLevel
+          SPOTIPY_CLIENT_ID: !Ref SpotipyClientId
+          SPOTIPY_CLIENT_SECRET: !Ref SpotipyClientSecret
+          SPOTIPY_REDIRECT_URI: !Ref SpotipyRedirectUri
+          ACCOUNT_ID: !Ref R2AccountId
+          ACCESS_KEY_ID: !Ref R2AccessKeyId
+          SECRET_ACCESS_KEY: !Ref R2SecretAccessKey
+          BUCKET_NAME: !Ref R2BucketName
+          S3APIENDPOINT: !Ref R2S3ApiEndpoint
+          TOKEN_VALUE: !Ref R2TokenValue
+          TMPDIR: /tmp
+      Events:
+        ScheduledRun:
+          Type: Schedule
+          Properties:
+            Name: spotify-extract-schedule
+            Description: "Run Spotify extraction 3x/day (UTC 05:00, 11:00, 17:00)"
+            Schedule: !Ref ScheduleExpression
+            Enabled: true
+
+  SpotifyExtractLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-extract"
+      RetentionInDays: 14
+
+Outputs:
+  FunctionName:
+    Value: !Ref SpotifyExtractFunction
+
+  FunctionArn:
+    Value: !GetAtt SpotifyExtractFunction.Arn
+
+  ScheduleExpression:
+    Value: !Ref ScheduleExpression
